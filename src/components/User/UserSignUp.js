@@ -1,6 +1,7 @@
 import './style.css'
 import react, { useState } from 'react';
 import axiosConn from '../../webApiConfig';
+import { useNavigate } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 const Axios = require('axios');
@@ -9,6 +10,7 @@ const Axios = require('axios');
 export default function UserSignUp() {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate();
 
 
     const userName = useSelector((state) => state.addUser.name)
@@ -60,6 +62,7 @@ export default function UserSignUp() {
                 }).then((res) => {
                     SetSuccess('data saved successfully')
                     SetError('')
+                    navigate('/userLogin')
                 }).catch(e => SetError(e.message))
 
 
