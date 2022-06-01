@@ -1,0 +1,65 @@
+.permisiionbtn {
+
+    margin-left: 0.3rem;
+    border: 1px solid rgba(179, 18, 243, 0);
+    background-color: white;
+    font-size: 0.95rem;
+}
+
+
+.permisiionbtn:active {
+
+    transform: scale(1.2);
+    background-color: white;
+    border-color: white;
+}
+
+.adduserbtn{
+
+    width: 8%;
+    justify-content: space-between;
+    font-size: 1.2rem;
+    display:flex;
+    flex-direction: column;
+}
+
+.PlusOutlined{
+   
+    color:rgb(250, 242, 242);
+    margin-bottom: 0.5rem;
+
+}
+
+
+.ant-table-thead>tr>th {
+    color: white;
+    background: #3071b9 !important;
+
+}
+
+
+.ant-table-tbody>tr>td {
+    color: rgb(15, 2, 2);
+    background: rgba(245, 245, 245, 0.76) !important;
+    border-color: rgba(0, 0, 0, 0.507);
+
+}
+
+.ant-table {
+    font-size: 1.3rem;
+    font-family: sans-serif;
+
+
+
+}
+
+.ant-input {
+
+    font-size: 1.1rem;
+
+}
+
+
+.anticon {
+    font-size: 1.3rem;
+}
