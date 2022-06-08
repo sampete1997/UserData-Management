@@ -599,9 +599,9 @@ export default function ShowUserData() {
           <Input
             type='file'
             placeholder='Photo'
-            value={''}
+           
             onChange={(e) => {
-              return dispatch({ type: 'addPhoto', photo: e.target.value })
+              return dispatch({ type: 'addPhoto', photo: e.target.files[0] })
             }}
           />
 

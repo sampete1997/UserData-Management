@@ -44,12 +44,12 @@ body {
 .userLoginWrapper h2 {
 
     color: rgb(129, 79, 139);
-    ;
+    
 }
 
 .userLoginWrapper div {
 
-    margin: 1.1rem;
+  
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -103,16 +103,18 @@ input::-webkit-inner-spin-button {
 }
 
 .userip {
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
+
+    /* margin-top: 0.5rem; */
+   
+  
 }
 
 .userPhoto{
 
     margin-top: 0.5rem;
-    margin-bottom: 1rem;
+    background-color: rgba(110, 130, 238, 0.438);
     width: 100%;
-    font-size: 1.1rem;
+    font-size: 1rem;
     padding: 0.5rem;
     
 }
@@ -126,14 +128,21 @@ input::-webkit-inner-spin-button {
 }
 
 .err {
-    margin-top: 1rem;
-    color: red
+   
+    color: red;
+    
+
+}
+
+.userLoginWrapper p{
+    font-size: 0.9rem;
+    font-style: italic;
 }
 
 .note {
 
-    margin-top: 1rem;
-    color: white
+   
+    color: rgb(255, 255, 255)
 }
 
 .success {

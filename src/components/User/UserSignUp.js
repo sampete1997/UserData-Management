@@ -22,7 +22,13 @@ export default function UserSignUp() {
     const userEmail = useSelector((state) => state.addUser.email)
     const userPhoto = useSelector((state) => state.addUser.photo)
 
+    const [nameErr, SetNameError] = useState('')
+    const [ageErr, SetAgeError] = useState('')
+    const [mobileNoErr, SetMobileNoError] = useState('')
+    const [emailErr, SetEmailError] = useState('')
+    const [photoErr, SetPhotoError] = useState('')
     const [err, SetError] = useState('')
+
     const [success, SetSuccess] = useState('')
     const [signUpBtnStatus, SetSignUpBtnStatus] = useState(false)
     const [spinner, setSpinner] = useState('none')
@@ -32,8 +38,13 @@ export default function UserSignUp() {
 
         SetSuccess('')
         SetError('')
+        SetNameError('')
+        SetAgeError('')
+        SetMobileNoError('')
+        SetEmailError('')
+        SetPhotoError('')
 
-        let allowsignUp = true
+
 
         if (userName === '' || userAge === '' || userMobileNo === '' || userEmail === '' || userPhoto === '') {
 
@@ -44,84 +55,87 @@ export default function UserSignUp() {
 
             SetSignUpBtnStatus(true)
 
-            try {
+            formData.append("image", userPhoto);
+            formData.append("name", userName);
+            formData.append("age", userAge);
+            formData.append("mobileNo", userMobileNo);
+            formData.append("email", userEmail);
+            formData.append("photo", userPhoto.name);
+            formData.append("flag", 'false');
+            formData.append("isAdmin", 'false');
+            console.log('formdata', formData);
 
-                let responseData = await axiosConn.post('/api/login', {
-                    email: userEmail,
-                    mobileNo: userMobileNo
-                })
-
-                if ((responseData.data).length > 0) {
-
-                    allowsignUp = false
-                }
+            axiosConn.post("/api/addUser", formData)
+                .then((res) => {
 
 
-            }
-            catch (err) {
 
-                console.log(err.response.data.message.details);
+                    console.log('mysignupres', res);
 
-                SetError(err.response.data.message.details[0].message)
-            }
+                    if (res.data.length > 0) {
 
-            if (allowsignUp) {
+                        SetError('Sorry email or mobile no. already exist')
 
-               
-                formData.append("image", userPhoto);
-                formData.append("name", userName);
-                formData.append("age", userAge);
-                formData.append("mobileNo", userMobileNo);
-                formData.append("email", userEmail);
-                formData.append("photo", userPhoto.name);
-                formData.append("flag", 'false');
-                formData.append("isAdmin", 'false');
-                console.log('formdta', formData);
 
-                axiosConn.post("/api/addUser", formData
-
-            
-
-                ).then((res) => {
-
-                    SetSuccess('Sign up done successfully  redirecting to login page')
-
-                    if (res) {
-                        setSpinner('flex')
-                        if (res) {
-
-                            setTimeout(() => {
-
-                                return (navigate('/userLogin'))
-
-                            }, 1000)
-                        }
                     }
 
+                    else {
+
+                        SetSuccess('Sign up done successfully  redirecting to login page')
+
+                        if (res) {
+                            setSpinner('flex')
+
+                            if (res) {
+
+                                setTimeout(() => {
+
+                                    return (navigate('/userLogin'))
+
+                                }, 2000)
+                            }
+                        }
+
+
+
+                    }
 
 
 
                 }).catch(err => {
 
-                    if(err.response.data){
-                        SetError('Only png,jpeg and jpg file allowed')
+                   if( typeof err.response.data == 'string') {
+                        SetPhotoError('Only png,jpeg and jpg file allowed')
                     }
 
-                    if (err.response.data.message.details) {
-                        SetError(err.response.data.message.details[0].message)
-                    }
+                    let errors = err.response.data.message.details
+                    errors.map((errMsg) => {
 
-              
+                        console.log('errmsg', errMsg);
+
+
+                        if ((errMsg.message).includes('name')) {
+                            SetNameError(errMsg.message)
+                        }
+                        if ((errMsg.message).includes('age')) {
+                            SetAgeError(errMsg.message)
+                        }
+                        if ((errMsg.message).includes('mobileNo')) {
+                            SetMobileNoError(errMsg.message)
+                        }
+                        if ((errMsg.message).includes('email')) {
+                            SetEmailError('email id must be valid email')
+                        }
+
+                    })
+
+
                     console.log('sign up err', err.response.data.message.details)
 
                 })
 
-            }
-            else {
 
-                SetError("User mobile number or email already exist")
 
-            }
 
         }
 
@@ -141,33 +155,35 @@ export default function UserSignUp() {
                     className="lbl"> Name </label
                 >
                 <input type='text' className='userip' name='name' placeholder='name' onChange={(e) => dispatch({ type: 'addName', name: e.target.value })}></input>
+                {nameErr ? <p className='err'>{nameErr} </p> : <p className='note'>blankNote</p>}
 
                 <label
                     className="lbl">Age </label
                 >
                 <input type='number' className='userip' name='age' placeholder='age' onChange={(e) => dispatch({ type: 'addAge', age: e.target.value })}></input>
-
+                {ageErr ? <p className='err'>{ageErr} </p> : <p className='note'>blankNote</p>}
                 <label
                     className="lbl">Mobile No </label
                 >
                 <input type='number' className='userip' name='mobileNo' placeholder='mobile Number' onChange={(e) => dispatch({ type: 'addMobileNo', mobileNo: e.target.value })}></input>
+                {mobileNoErr ? <p className='err'>{mobileNoErr} </p> : <p className='note'>blankNote</p>}
 
                 <label
                     className="lbl"> Email Id</label
                 >
                 <input type='text' className='userip' name='email' placeholder='email address' onChange={(e) => dispatch({ type: 'addEmail', email: e.target.value })}></input>
-
+                {emailErr ? <p className='err'>{emailErr} </p> : <p className='note'>blankNote</p>}
                 <label
-                    className="lbl"> photo</label
+                    className="lbl"> Photo</label
                 >
                 <input type='file' className='userPhoto' name='photo' onChange={(e) => dispatch({ type: 'addPhoto', photo: e.target.files[0] })}></input>
-
+                {photoErr ? <p className='err'>{photoErr} </p> : <p className='note'>blankNote</p>}
 
 
                 {spinner == 'none' ? <button className='userSignUpInBtn' onClick={() => SubmitData()} disabled={signUpBtnStatus} >Sign Up</button> : <div className='loader' style={{ display: { spinner } }}></div>}
 
-                {err ? <p className='err'>{err} </p> : <p className='note'>blankNote</p>}
 
+                {err ? <p className='err'>{err} </p> : <p className='note'>blankNote</p>}
                 {success ? <p className='success'>{success} </p> : <p className='note'>blankNote</p>}
 
 
