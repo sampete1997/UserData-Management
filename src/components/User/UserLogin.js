@@ -4,13 +4,18 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import axiosConn from '../../webApiConfig';
+
+
 const Axios = require('axios')
 
 
 export default function UserLogin() {
 
 
-    const [err, SetError] = useState('')
+    const [err, SetError] = useState('');
+    const [success, SetSuccess] = useState('');
+    const [spinner, setSpinner] = useState('none')
+    const [logInBtnStatus, setLogInBtnStatus] = useState(false)
     const navigate = useNavigate();
     const userName = useSelector((state) => state.login.userName)
 
@@ -21,64 +26,77 @@ export default function UserLogin() {
 
     const dispatch = useDispatch()
 
-    async function logMeIN() {
+    function logMeIN() {
 
+        let newData;
 
         if (userEmail == '' || userMobileNo == '') {
 
             SetError('Enter all the fields')
 
-
         }
 
         else {
 
+            setLogInBtnStatus(true)
 
-            let responseData = await axiosConn.get("/api/all")
-
-            let newData = responseData.data
-
-            for (let userId = 0; userId < newData.length; userId++) {
-
-                if (newData[userId].email === userEmail) {
-
-
-                    if (newData[userId].mobileNo === userMobileNo) {
+            axiosConn.post('/api/login', {
+                email: userEmail,
+                mobileNo: userMobileNo
+            })
+                .then((response) => {
 
                         SetError('')
+                        
+                        if (response.data[0]) {
 
-                        if (newData[userId].flag === "true") {
-                            dispatch({ type: 'getUserName', payload: newData[userId].name })
+                            SetSuccess('Loging in...')
 
-                            newData[userId].isAdmin == 'true' ? navigate('/showdb') : navigate('/loginSuccess')
+                            dispatch({ type: 'getUserName', payload: response.data[0].name })
 
-                            dispatch({ type: 'getUserId', payload: '' })
-                            dispatch({ type: 'getPassword', payload: '' })
-                            break
+                            setSpinner('flex')
+
+                            if (response.data[0].flag=='true') {
+
+                                setTimeout(() => {
+
+                                    return response.data[0].isAdmin == 'true' ? navigate('/showdb') : navigate('/loginSuccess')
+                                    
+                                }, 1500)
+                            }
+
+                            else{
+                                SetError('Sorry! you are not allowed')
+                                setSpinner('none')
+                            }
+
+
                         }
                         else {
 
-                            SetError('You are not allowed')
-                            break
+                            SetError('Email Id or mobile number invalid. Try again')
                         }
+                    
+                    setLogInBtnStatus(false)
+                    return response.data
+                })
+                .catch((err) => {
 
+                    if (err.response.data.message.details) {
+                        SetError(err.response.data.message.details[0].message)
                     }
-                    else {
+                    console.log(err)
+                    setLogInBtnStatus(false)
+                    return err
+                })
 
-                        SetError('Wrong UserId or Password')
-                        break
-                    }
-                }
 
-                if (userId === (newData.length) - 1) {
-                    SetError('User not found')
 
-                }
-
-            }
         }
 
+
     }
+
 
     return (
 
@@ -88,18 +106,18 @@ export default function UserLogin() {
                 <h2>Login</h2>
 
                 <div>
-                    <lable className="lbl"> User Name</lable>
-                    <input type='text' className='userId' placeholder='username' onChange={(e) => dispatch({ type: 'getUserId', payload: e.target.value })}></input>
+                    <label className="lbl"> Email Id</label>
+                    <input type='text' className='userip' placeholder='email id' onChange={(e) => dispatch({ type: 'getUserId', payload: e.target.value })}></input>
                 </div>
 
                 <div>
-                    <lable className='lbl'> Password</lable>
-                    <input type='password' className='userPassword' placeholder='password' onChange={(e) => dispatch({ type: 'getPassword', payload: e.target.value })}></input>
+                    <label className='lbl'> Mobile No.</label>
+                    <input type='number' className='userip' placeholder='mobile number' onChange={(e) => dispatch({ type: 'getPassword', payload: e.target.value })}></input>
                 </div>
 
-                <button className='userLogInBtn' onClick={() => logMeIN()}>Log In</button>
+                {spinner == 'none' ? <button className='userLogInBtn' onClick={() => logMeIN()} disabled={logInBtnStatus}>Log In</button> : <div className='loader' style={{ display: { spinner } }}></div>}
 
-                {err ? <p className='err'>{err} </p> : <p className='note'>Hit login</p>}
+                {err ? <p className='err'>{err} </p> : <p className='success'>{success}</p>}
 
             </div>
 

@@ -9,6 +9,7 @@ import Home from './components/home';
 import ShowUserData from './components/showdatabase';
 import { useLocation } from 'react-router-dom'
 import { useSelector } from 'react-redux';
+import ErrorBoundary from './components/User/errorBoundary';
 
 
 import './App.css';
@@ -18,10 +19,11 @@ import { Route, Routes } from 'react-router-dom';
 function App() {
 
   const userName = useSelector((state) => state.login.userName);
+  const location = useLocation();
 
   function HeaderView() {
-    const location = useLocation();
-    console.log('headervie:', location.pathname);
+    
+    
     return (
 
       (location.pathname == '/showdb' || location.pathname == '/loginSuccess' || userName != '') ? <NavBar2 /> : <NavBar />)
@@ -29,18 +31,20 @@ function App() {
 
   return (
     <div className="App">
+      
+      <ErrorBoundary key={location.pathname}>
+        
+        {HeaderView()}
+        <Routes>
 
-      {HeaderView()}
+          <Route path='/' element={<Home />} />
+          <Route path='/userLogin' element={<UserLogin />} />
+          <Route path='/userSignUp' element={<UserSignUp />} />
+          <Route path='/showdb' element={<ShowUserData />} />
+          <Route path={'/loginSuccess'} element={userName ? <LoginSuccess /> : <UserLogin />} />
 
-
-      <Routes>
-        <Route path='/' element={<Home />} />
-
-        <Route path='/userLogin' element={<UserLogin />} />
-        <Route path='/userSignIn' element={<UserSignUp />} />
-        <Route path='/showdb' element={<ShowUserData />} />
-        <Route path={'/loginSuccess'} element={userName ? <LoginSuccess /> : <UserLogin />} />
-      </Routes>
+        </Routes>
+      </ErrorBoundary>
     </div>
   );
 }

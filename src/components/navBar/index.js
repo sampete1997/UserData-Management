@@ -12,7 +12,7 @@ export default function NavBar() {
         <div className='navBarContainer'>
 
             <Link to='/' className='links'><p>Home</p></Link>
-            <Link to='usersignIn' className='links'><p>Sign Up</p></Link>
+            <Link to='userSignUp' className='links'><p>Sign Up</p></Link>
             <Link to='userLogin' className='links'><p>Log In</p></Link>
 
         </div>

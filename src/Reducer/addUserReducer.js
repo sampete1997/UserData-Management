@@ -8,7 +8,8 @@ const initialState = {
     email: '',
     photo: '',
     flag: false,
-    isAdd: false
+    isAdd: false,
+   
 
 }
 

@@ -1,4 +1,4 @@
-.permisiionbtn {
+.permissionbtn {
 
     margin-left: 0.3rem;
     border: 1px solid rgba(179, 18, 243, 0);
@@ -7,7 +7,8 @@
 }
 
 
-.permisiionbtn:active {
+.permissionbtn:active {
+
 
     transform: scale(1.2);
     background-color: white;
@@ -46,7 +47,7 @@
 }
 
 .ant-table {
-    font-size: 1.3rem;
+    font-size: 1rem;
     font-family: sans-serif;
 
 
@@ -55,11 +56,25 @@
 
 .ant-input {
 
-    font-size: 1.1rem;
+    font-size: 1rem;
 
 }
 
 
 .anticon {
-    font-size: 1.3rem;
+    font-size: 1rem;
+}
+
+
+.err{
+
+    padding-top: 1.2rem;
+    color: red;
+    font-size: 1rem;
+}
+
+.success{
+    padding-top: 1.2rem;
+    color: green;
+    font-size: 1rem;
 }
