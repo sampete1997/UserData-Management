@@ -54,7 +54,7 @@ export default function UserSignUp() {
         else {
 
             SetSignUpBtnStatus(true)
-
+            console.log('img obj',userPhoto);
             formData.append("image", userPhoto);
             formData.append("name", userName);
             formData.append("age", userAge);

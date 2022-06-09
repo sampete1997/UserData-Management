@@ -7,7 +7,8 @@ const { ShowUserData } = fetchData
 const initialState = {
     userData: [],
     flag: '',
-    isEditing:false
+    isEditing:false,
+    updateRedux:0
 }
 
 function showDataReducer(state = initialState, action) {
@@ -29,6 +30,12 @@ function showDataReducer(state = initialState, action) {
 
                 isEditing: action.isEditing
             }
+
+            case 'updateRedux':
+                return {
+                    ...state,
+                    updateRedux:state.updateRedux+1
+                }
 
         default:
             return state

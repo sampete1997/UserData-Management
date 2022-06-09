@@ -26,18 +26,27 @@ export default function ShowUserData() {
   const userPhoto = useSelector((state) => state.addUser.photo);
   const isEditing = useSelector((state) => state.showData.isEditing);
   const isAdd = useSelector((state) => state.addUser.isAdd);
-  const changeFlag = useSelector((state) => state.showData.flag);
+  const updateRedux = useSelector((state) => state.showData.updateRedux);
   const [number, SetNumber] = useState('')
+  const [FileName, SetFileName] = useState('')
 
-  
 
   const [err, SetErr] = useState('')
   const [success, SetSuccess] = useState('')
+  const [userPic, SetUserPic] = useState('')
+  const [nameErr, SetNameError] = useState('')
+  const [ageErr, SetAgeError] = useState('')
+  const [mobileNoErr, SetMobileNoError] = useState('')
+  const [emailErr, SetEmailError] = useState('')
+  const [photoErr, SetPhotoError] = useState('')
+
   useEffect(() => {
 
     axiosConn.get(`/api/showdb`).then((responseData) => {
 
       let newData = responseData.data
+
+      console.log('updateRedux', updateRedux);
 
       return dispatch({ type: 'ShowUserData', payload: newData })
 
@@ -46,7 +55,7 @@ export default function ShowUserData() {
       console.log(err)
     })
 
-  }, [isEditing, changeFlag])
+  }, [isEditing, updateRedux])
 
   function allow(mobileNum) {
 
@@ -57,7 +66,7 @@ export default function ShowUserData() {
 
     }).then(() => {
 
-      dispatch({ type: 'changeFlag', payload: 'up' })
+      dispatch({ type: 'updateRedux' })
 
     })
 
@@ -70,7 +79,7 @@ export default function ShowUserData() {
       mobileNo: mobileNum
     }).then(() => {
 
-      dispatch({ type: 'changeFlag', payload: 'down' })
+      dispatch({ type: 'updateRedux' })
 
 
 
@@ -86,6 +95,11 @@ export default function ShowUserData() {
 
     SetErr('')
     SetSuccess('')
+    SetNameError('')
+    SetAgeError('')
+    SetMobileNoError('')
+    SetEmailError('')
+    SetPhotoError('')
 
     formData.append("image", userPhoto);
     formData.append("mobileNum", number);
@@ -93,30 +107,59 @@ export default function ShowUserData() {
     formData.append("age", userAge);
     formData.append("mobileNo", userMobileNo);
     formData.append("email", userEmail);
-    formData.append("photo", userPhoto.name);
- 
+    formData.append("photo", userPhoto.name || FileName);
+
     console.log('formdta', formData);
 
     axiosConn.put("/api/edit", formData).then((response) => {
 
-      SetSuccess('Saved Changes')
-      dispatch({ type: 'changeFlag', payload: 'up' })
-      dispatch({ type: 'changeFlag', payload: 'down' })
 
-    }).catch(err => {
 
-      if (err.response.data) {
-        SetErr('Only png,jpeg and jpg file allowed')
+
+      SetPhotoError('')
+
+      SetSuccess('Changes has saved')
+      dispatch({ type: 'updateRedux' })
+
+
+    }).catch((err) => {
+
+      if (typeof err.response.data == 'string') {
+        SetPhotoError('Only png,jpeg and jpg file allowed')
       }
 
-      if (err.response.data.message.details[0]) {
-        SetErr(err.response.data.message.details[0].message)
-      }
+      let errors = err.response.data.message.details
+      errors.map((errMsg) => {
 
-      console.log('failed', err)
+        console.log('errmsg', errMsg);
+
+
+        if ((errMsg.message).includes('name')) {
+          SetNameError(errMsg.message)
+        }
+        if ((errMsg.message).includes('"age"')) {
+          SetAgeError(errMsg.message)
+        }
+        if ((errMsg.message).includes('mobileNo')) {
+          SetMobileNoError(errMsg.message)
+        }
+        if ((errMsg.message).includes('email')) {
+          if (userEmail === '') {
+
+            SetEmailError('email is required')
+          }
+          else {
+
+            SetEmailError('email id must be valid email')
+          }
+        }
+        if ((errMsg.message).includes('image')) {
+          SetPhotoError('please add image')
+        }
+
+      })
+
     })
-
-
   }
 
   async function addNewUserData() {
@@ -125,86 +168,91 @@ export default function ShowUserData() {
 
     SetErr('')
     SetSuccess('')
-    let allowAddUser = true
+    SetNameError('')
+    SetAgeError('')
+    SetMobileNoError('')
+    SetEmailError('')
+    SetPhotoError('')
+  
 
     if (userName === '' || userAge === '' || userMobileNo === '' || userEmail === '' || userPhoto === '') {
 
-      SetErr('Fill all input fields')
+      SetErr('all the input fields are required')
 
     }
     else {
 
-      try {
 
-        let responseData = await axiosConn.post('/api/login', {
-          email: userEmail,
-          mobileNo: userMobileNo
-        })
+      formData.append("image", userPhoto);
+      formData.append("name", userName);
+      formData.append("age", userAge);
+      formData.append("mobileNo", userMobileNo);
+      formData.append("email", userEmail);
+      formData.append("photo", userPhoto.name);
+      formData.append("flag", 'false');
+      formData.append("isAdmin", 'false');
+      console.log('formdata', formData);
 
-        if ((responseData.data).length > 0) {
+      axiosConn.post("/api/addUser", formData
 
-          allowAddUser = false
+
+        // name: userName,
+        // age: userAge,
+        // mobileNo: userMobileNo,
+        // email: userEmail,
+        // photo: userPhoto,
+        // flag: "false",
+        // isAdmin: "false"
+
+      ).then((response) => {
+
+        if (response.data.length > 0) {
+
+          SetErr('Sorry email or mobile no. already exist')
+
+        }
+
+        else {
+          SetSuccess('Added user succussfully')
+          dispatch({ type: 'updateRedux' })
+          console.log('updateRedux', updateRedux);
+
+
         }
 
 
+      }).catch(err => {
 
-      }
-      catch (err) {
+        if (typeof err.response.data == 'string') {
+          SetPhotoError('Only png,jpeg and jpg file allowed')
+        }
 
-        console.log(err);
+        let errors = err.response.data.message.details
+        errors.map((errMsg) => {
 
-        SetErr(err.response.data.message.details[0].message)
-      }
-
-
-      if (allowAddUser) {
-
-        formData.append("image", userPhoto);
-        formData.append("name", userName);
-        formData.append("age", userAge);
-        formData.append("mobileNo", userMobileNo);
-        formData.append("email", userEmail);
-        formData.append("photo", userPhoto.name);
-        formData.append("flag", 'false');
-        formData.append("isAdmin", 'false');
-        console.log('formdta', formData);
-
-        axiosConn.post("/api/addUser", formData
+          console.log('errmsg', errMsg);
 
 
-          // name: userName,
-          // age: userAge,
-          // mobileNo: userMobileNo,
-          // email: userEmail,
-          // photo: userPhoto,
-          // flag: "false",
-          // isAdmin: "false"
-
-        ).then((response) => {
-          SetSuccess('Added user succussfully')
-          dispatch({ type: 'changeFlag', payload: 'up' })
-          dispatch({ type: 'changeFlag', payload: 'down' })
-
-
-        }).catch(err => {
-
-          if (err.response.data) {
-
-            SetErr('Only png,jpeg and jpg file allowed')
+          if ((errMsg.message).includes('name')) {
+            SetNameError(errMsg.message)
+          }
+          if ((errMsg.message).includes('age')) {
+            SetAgeError(errMsg.message)
+          }
+          if ((errMsg.message).includes('mobileNo')) {
+            SetMobileNoError(errMsg.message)
+          }
+          if ((errMsg.message).includes('email')) {
+            SetEmailError(errMsg.message)
           }
 
-          if (err.response.data.message.details[0]) {
-            SetErr(err.response.data.message.details[0].message)
-          }
-
-          console.log(err)
         })
-      }
-      else {
 
-        SetErr('user mobile number or email already exist ')
 
-      }
+        console.log('add user err', err.response.data.message.details)
+
+      })
+
 
     }
   }
@@ -217,8 +265,8 @@ export default function ShowUserData() {
       email: userMail
     }).then((response) => {
 
-      dispatch({ type: 'changeFlag', payload: 'up' })
-      dispatch({ type: 'changeFlag', payload: 'down' })
+      dispatch({ type: 'updateRedux' })
+
     }).catch(err => {
       console.log(err)
     })
@@ -517,12 +565,18 @@ export default function ShowUserData() {
     SetNumber(record.mobileNo)
     dispatch({ type: 'isEditing', isEditing: true })
 
-    dispatch({ type: 'changeFlag', payload: 'up' })
+    dispatch({ type: 'updateRedux' })
     dispatch({ type: 'addName', name: record.name })
     dispatch({ type: 'addAge', age: record.age })
     dispatch({ type: 'addMobileNo', mobileNo: record.mobileNo })
     dispatch({ type: 'addEmail', email: record.email })
-    dispatch({ type: 'addPhoto', photo: record.photo })
+
+    SetFileName(record.photo)
+
+    SetUserPic(String(process.env.REACT_APP_BASE_URL) + '/images/' + record.photo)
+
+
+
   };
   const resetEditing = () => {
 
@@ -534,8 +588,14 @@ export default function ShowUserData() {
     dispatch({ type: 'addEmail', email: '' })
     dispatch({ type: 'addPhoto', photo: '' })
     dispatch({ type: 'isEditing', isEditing: false });
+
     SetErr('')
     SetSuccess('')
+    SetNameError('')
+    SetAgeError('')
+    SetMobileNoError('')
+    SetEmailError('')
+    SetPhotoError('')
 
   };
   return (
@@ -551,6 +611,8 @@ export default function ShowUserData() {
 
             resetEditing();
             SetNumber('')
+            SetFileName('')
+            SetUserPic('')
           }}
           onOk={() => {
 
@@ -564,6 +626,9 @@ export default function ShowUserData() {
               addNewUserData();
 
             }
+
+            SetFileName('')
+            SetUserPic('')
           }}
         >
           <Input
@@ -573,6 +638,7 @@ export default function ShowUserData() {
               return dispatch({ type: 'addName', name: e.target.value })
             }}
           />
+          {nameErr ? <p className='err'>{nameErr}</p> : <p></p>}
           <Input
             placeholder='age'
             type={'number'}
@@ -581,6 +647,7 @@ export default function ShowUserData() {
               return dispatch({ type: 'addAge', age: e.target.value })
             }}
           />
+          {ageErr ? <p className='err'>{ageErr}</p> : <p></p>}
           <Input
             placeholder='mobile number'
             type={'number'}
@@ -589,6 +656,7 @@ export default function ShowUserData() {
               return dispatch({ type: 'addMobileNo', mobileNo: e.target.value })
             }}
           />
+          {mobileNoErr ? <p className='err'>{mobileNoErr}</p> : <p></p>}
           <Input
             placeholder='email'
             value={userEmail}
@@ -596,16 +664,19 @@ export default function ShowUserData() {
               return dispatch({ type: 'addEmail', email: e.target.value })
             }}
           />
+          {emailErr ? <p className='err'>{emailErr}</p> : <p></p>}
           <Input
             type='file'
             placeholder='Photo'
-           
             onChange={(e) => {
               return dispatch({ type: 'addPhoto', photo: e.target.files[0] })
             }}
           />
+          {photoErr ? <p className='err'>{photoErr}</p> : <p></p>}
 
           {success ? <p className='success'>{success} </p> : <p className='err'>{err}</p>}
+
+          {userPic? <img  id="userImg"src={userPic} height={100} width={120} ></img>: ''}
         </Modal>
       </header>
     </div>

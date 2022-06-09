@@ -68,13 +68,20 @@
 
 .err{
 
-    padding-top: 1.2rem;
     color: red;
-    font-size: 1rem;
+    font-size: 0.9;
+    font-style: italic;
+    
 }
 
 .success{
-    padding-top: 1.2rem;
+    
     color: green;
     font-size: 1rem;
+    font-style: italic;
+}
+
+#userImg{
+    
+    
 }
