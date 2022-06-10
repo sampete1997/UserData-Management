@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 
 
 
-export default function NavBar2() {
+export default function AdminNavBar2() {
 
     const dispatch = useDispatch()
 
@@ -14,7 +14,7 @@ export default function NavBar2() {
 
             <Link to='/' className='links'><p >Home</p></Link>
             <Link to='/loginSuccess' className='links'><p >Profile</p></Link>
-
+            <Link to='/showdb' className='links'><p >ShowUserData</p></Link>
             <Link to='/userLogin' className='links' onClick={() => {
 
                 localStorage.setItem('username', '')

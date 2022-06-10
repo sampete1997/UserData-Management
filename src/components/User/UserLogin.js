@@ -36,123 +36,129 @@ export default function UserLogin() {
         }
     }
 
-        function logMeIN() {
+    function logMeIN() {
 
-            SetMobileNoError('')
-            SetEmailError('')
-            SetError('')
+        SetMobileNoError('')
+        SetEmailError('')
+        SetError('')
 
-            let newData;
+        let newData;
 
-            if (userEmail == '' || userMobileNo == '') {
+        if (userEmail == '' || userMobileNo == '') {
 
-                SetError('Enter all the fields')
+            SetError('Enter all the fields')
 
-            }
+        }
 
-            else {
+        else {
 
-                setLogInBtnStatus(true)
+            setLogInBtnStatus(true)
 
-                axiosConn.post('/api/login', {
-                    email: userEmail,
-                    mobileNo: userMobileNo
-                })
-                    .then((response) => {
+            axiosConn.post('/api/login', {
+                email: userEmail,
+                mobileNo: userMobileNo
+            })
+                .then((response) => {
 
-                        SetError('')
+                    SetError('')
 
-                        if (response.data[0]) {
+                    if (response.data[0]) {
 
-                            SetSuccess('Loging in...')
+                        SetSuccess('Loging in...')
 
+
+
+                        setSpinner('flex')
+
+                        if (response.data[0].flag == 'true') {
+
+
+
+                            localStorage.setItem('userDetails', JSON.stringify(response.data[0]))
                             
+                            let UserDetails = JSON.parse(localStorage.getItem('userDetails'))
+                            dispatch({ type: 'getUserDetails', payload: UserDetails })
+                            console.log('lcl strh details', response.data[0]);
+                            dispatch({ type: 'getUserName', payload: response.data[0].name })
+                            localStorage.setItem('username', response.data[0].name)
 
-                            setSpinner('flex')
+                            setTimeout(() => {
 
-                            if (response.data[0].flag == 'true') {
+                                return response.data[0].isAdmin == 'true' ? navigate('/showdb') : navigate('/loginSuccess')
 
-                                dispatch({ type: 'getUserName', payload: response.data[0].name })
-
-                                localStorage.setItem('username',response.data[0].name )
-
-                                setTimeout(() => {
-
-                                    return response.data[0].isAdmin == 'true' ? navigate('/showdb') : navigate('/loginSuccess')
-
-                                }, 2000)
-                            }
-
-                            else {
-                                SetError('Sorry! you are not allowed')
-                                setSpinner('none')
-                            }
-
-
+                            }, 2000)
                         }
+
                         else {
-
-                            SetError('Wrong email Id or mobile number. Try again')
+                            SetError('Sorry! you are not allowed')
+                            setSpinner('none')
                         }
 
-                        setLogInBtnStatus(false)
-                        return response.data
+
+                    }
+                    else {
+
+                        SetError('Wrong email Id or mobile number. Try again')
+                    }
+
+                    setLogInBtnStatus(false)
+                    return response.data
+                })
+                .catch((err) => {
+
+                    let errors = err.response.data.message.details
+                    errors.map((errMsg) => {
+
+                        console.log('errmsg', errMsg);
+
+                        if ((errMsg.message).includes('mobileNo')) {
+                            SetMobileNoError(errMsg.message)
+                        }
+
+                        if ((errMsg.message).includes('email')) {
+                            SetEmailError('email must be valid')
+                        }
+
                     })
-                    .catch((err) => {
+                    console.log(err)
+                    setLogInBtnStatus(false)
+                    return err
+                })
 
-                        let errors = err.response.data.message.details
-                        errors.map((errMsg) => {
-    
-                            console.log('errmsg', errMsg);
-
-                            if ((errMsg.message).includes('mobileNo')) {
-                                SetMobileNoError(errMsg.message)
-                            }
-                            
-                            if ((errMsg.message).includes('email')) {
-                                SetEmailError('email must be valid')
-                            }
-    
-                        })
-                        console.log(err)
-                        setLogInBtnStatus(false)
-                        return err
-                    })
-
-
-
-            }
 
 
         }
 
 
-        return (
+    }
 
-            <div className="userLoginContainer">
 
-                <div className="userLoginWrapper">
-                    <h2>Login</h2>
+    return (
 
-                    <div>
-                        <label className="lbl"> Email Id</label>
-                        <input type='text' className='userip' placeholder='email id' onChange={(e) => dispatch({ type: 'getUserId', payload: e.target.value })} onKeyDown={e => handleKeyPress(e)}></input>
-                    </div>
+        <div className="userLoginContainer">
 
-                    {emailErr? <p className='err'>{emailErr} </p> : <p className='note'>blankNote</p>}
+            <div className="userLoginWrapper">
+                <h2>Login</h2>
 
-                    <div>
-                        <label className='lbl'> Mobile No.</label>
-                        <input type='number' className='userip' placeholder='mobile number' onChange={(e) => dispatch({ type: 'getPassword', payload: e.target.value }) }   onKeyDown={e => handleKeyPress(e)}></input>
-                        {mobileNoErr ? <p className='err'>{mobileNoErr} </p> : <p className='note'>blankNote</p>}
-                    </div>
-
-                    {spinner == 'none' ? <button className='userLogInBtn' onClick={() =>logMeIN()} disabled={logInBtnStatus} >Log In</button> : <div className='loader' style={{ display: { spinner } } }></div>}
-
-                    {err ? <p className='error'>{err} </p> : <p className='Success'>{success}</p>}
-
+                <div>
+                    <label className="lbl"> Email Id</label>
+                    <input type='text' className='userip' placeholder='email id' onChange={(e) => dispatch({ type: 'getUserId', payload: e.target.value })} onKeyDown={e => handleKeyPress(e)}></input>
                 </div>
 
+                {emailErr ? <p className='err'>{emailErr} </p> : <p className='note'>blankNote</p>}
+
+                <div>
+                    <label className='lbl'> Mobile No.</label>
+                    <input type='number' className='userip' placeholder='mobile number' onChange={(e) => dispatch({ type: 'getPassword', payload: e.target.value })} onKeyDown={e => handleKeyPress(e)}></input>
+                    {mobileNoErr ? <p className='err'>{mobileNoErr} </p> : <p className='note'>blankNote</p>}
+                </div>
+
+                {spinner == 'none' ? <button className='userLogInBtn' onClick={() => logMeIN()} disabled={logInBtnStatus} >Log In</button> : <div className='loader' style={{ display: { spinner } }}></div>}
+
+                {err ? <p className='error'>{err} </p> : <p className='Success'>{success}</p>}
+
             </div>
-        )
-    }
+
+        </div>
+    )
+}

@@ -3,7 +3,8 @@
 const initialState = {
     userId: '',
     password: '',
-    userName: ''
+    userName: '',
+    userDetails: {}
 }
 
 function loginReducer(state = initialState, action) {
@@ -21,6 +22,13 @@ function loginReducer(state = initialState, action) {
         case 'getUserName':
 
             return { ...state, userName: action.payload }
+
+        case 'getUserDetails':
+
+            return { userDetails: action.payload }
+
+
+            
 
         default:
 

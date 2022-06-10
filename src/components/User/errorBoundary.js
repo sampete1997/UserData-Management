@@ -1,4 +1,5 @@
 import { Component } from "react";
+import NavBar from "../navBar";
 
 export default class ErrorBoundary extends Component {
     constructor(props) {
@@ -19,7 +20,14 @@ export default class ErrorBoundary extends Component {
     render() {
       if (this.state.hasError) {
 
-        return <h1 className="errorBoundary">Something went wrong.try again later</h1>;
+
+        
+        return (
+          <div>
+        <NavBar/>
+        <h1 className="errorBoundary">Something went wrong.try again later</h1>
+        </div>)
+        
       }
   
       return this.props.children; 

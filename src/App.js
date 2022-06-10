@@ -4,17 +4,19 @@ import UserLogin from './components/User/UserLogin';
 import UserSignUp from './components/User/UserSignUp';
 import NavBar from './components/navBar';
 import NavBar2 from './components/navBar/navbar2';
+import AdminNavBar from './components/navBar/adminNavbar';
 import LoginSuccess from './components/User/LoginSuccess';
 import Home from './components/home';
 import ShowUserData from './components/showdatabase';
 import { useLocation } from 'react-router-dom'
-import { useSelector,useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ErrorBoundary from './components/User/errorBoundary';
 
 
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import { useEffect } from 'react';
+import AdminNavBar2 from './components/navBar/adminNavbar';
 
 
 function App() {
@@ -22,32 +24,44 @@ function App() {
   const userName = useSelector((state) => state.login.userName);
   const location = useLocation();
   const dispatch = useDispatch()
+  let userDetails
 
-  console.log('lcstrg',localStorage.getItem('username'));
+  userDetails = localStorage.getItem('userDetails') != '' ? JSON.parse(localStorage.getItem('userDetails')) : { isAdmin: 'false' }
 
-useEffect(()=>{
+  console.log('lcstrg', localStorage.getItem('username'));
 
-    if(localStorage['username']){
+  useEffect(() => {
+
+    if (localStorage['username']) {
 
       dispatch({ type: 'getUserName', payload: localStorage.getItem('username') })
     }
 
   }
 
-    ,[userName])
+    , [])
 
   function HeaderView() {
-    
-    return (
 
-      ((location.pathname == '/showdb' && userName!= '' ) || (location.pathname == '/loginSuccess' || userName != '')) ? <NavBar2 /> : <NavBar />)
+    if ((location.pathname == '/showdb' || location.pathname == '/loginSuccess' || location.pathname == '/') && userDetails.isAdmin === 'true') {
+      return <AdminNavBar />
+    }
+
+    else if ((location.pathname == '/loginSuccess' || location.pathname == '/' )&& userDetails.isAdmin != 'true') {
+      return <NavBar2 />
+    }
+
+    else {
+
+      return <NavBar />
+    }
   }
 
   return (
     <div className="App">
-      
+
       <ErrorBoundary key={location.pathname}>
-        
+
         {HeaderView()}
         <Routes>
 

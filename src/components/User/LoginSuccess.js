@@ -1,18 +1,41 @@
 import './style.css'
 import React from 'react'
-import { useSelector,useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
+import { useState, useEffect } from 'react'
 
-export default function LoginSuccess(){
+export default function LoginSuccess() {
 
-  
+    const dispatch = useDispatch()
+    const [userPic, SetUserPic] = useState('')
+    let UserDetails
+
     const userName = useSelector((state) => state.login.userName)
-    
-    
-    return (
-        <div className='loginSuccessContainer'>
 
-            <h1>Welcome {userName} </h1>
-            <img src='https://assets.materialup.com/uploads/9ba2d687-d7d3-4361-8aee-7b2a3c074761/preview.gif' height={400} width={600} ></img>
+    UserDetails = localStorage.getItem('userDetails')=='' ? {} : JSON.parse(localStorage.getItem('userDetails'))
+    
+    console.log('details', Object.values(UserDetails));
+
+    useEffect(() => {
+
+        SetUserPic(String(process.env.REACT_APP_URL) + '/images/' + UserDetails.photo)
+
+    }, [UserDetails])
+
+    return (
+        <div className='loginSuccessWrapper'>
+
+            <h1>WELCOME {(UserDetails.name).toUpperCase()} </h1>
+
+            <div className='loginSuccessContainer'>
+                <img src={userPic} height={280} width={300} alt={''}></img>
+                <div>
+                    <h3>Name:&nbsp; {(UserDetails.name)} </h3>
+                    <h3>Age:&nbsp;{UserDetails.age}</h3>
+                    <h3>Mobile No:&nbsp;{UserDetails.mobileNo}</h3>
+                    <h3>Email Id:&nbsp;{UserDetails.email}</h3>
+                </div>
+            </div>
+
         </div>
     )
 }

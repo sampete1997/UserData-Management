@@ -119,6 +119,13 @@ export default function ShowUserData() {
       SetPhotoError('')
       SetSuccess('Changes has saved')
       dispatch({ type: 'updateRedux' })
+      setTimeout(() => {
+        dispatch({ type: 'isEditing', isEditing: false });
+
+
+      }, 1000)
+      
+   
 
 
     }).catch((err) => {
@@ -216,7 +223,8 @@ export default function ShowUserData() {
           SetSuccess('Added user succussfully')
           dispatch({ type: 'updateRedux' })
           console.log('updateRedux', updateRedux);
-          
+
+
           setTimeout(() => {
             dispatch({ type: 'isAdd', isAdd: false })
 
@@ -575,7 +583,7 @@ export default function ShowUserData() {
     SetMobileNoError('')
     SetEmailError('')
     SetPhotoError('')
-    
+
     console.log('clicked record', record);
     SetNumber(record.mobileNo)
     dispatch({ type: 'isEditing', isEditing: true })
@@ -588,7 +596,7 @@ export default function ShowUserData() {
 
     SetFileName(record.photo)
 
-    SetUserPic(String(process.env.REACT_APP_BASE_URL) + '/images/' + record.photo)
+    SetUserPic(String(process.env.REACT_APP_URL) + '/images/' + record.photo)
 
 
 
@@ -642,7 +650,7 @@ export default function ShowUserData() {
 
             }
 
-         
+
           }}
         >
           <Input
@@ -690,7 +698,7 @@ export default function ShowUserData() {
 
           {success ? <p className='success'>{success} </p> : <p className='err'>{err}</p>}
 
-          {userPic ? <img id="userImg" src={userPic} height={100} width={120} ></img> : ''}
+          {userPic ? <img id="userImg" src={userPic} height={150} width={150} ></img> : ''}
         </Modal>
       </header>
     </div>
