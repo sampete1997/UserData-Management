@@ -117,15 +117,15 @@ export default function ShowUserData() {
 
 
       SetPhotoError('')
-
       SetSuccess('Changes has saved')
       dispatch({ type: 'updateRedux' })
 
 
     }).catch((err) => {
 
-      if (typeof err.response.data == 'string') {
-        SetPhotoError('Only png,jpeg and jpg file allowed')
+      if (err.response.data.Message) {
+
+        SetPhotoError(err.response.data.Message)
       }
 
       let errors = err.response.data.message.details
@@ -173,7 +173,7 @@ export default function ShowUserData() {
     SetMobileNoError('')
     SetEmailError('')
     SetPhotoError('')
-  
+
 
     if (userName === '' || userAge === '' || userMobileNo === '' || userEmail === '' || userPhoto === '') {
 
@@ -216,6 +216,12 @@ export default function ShowUserData() {
           SetSuccess('Added user succussfully')
           dispatch({ type: 'updateRedux' })
           console.log('updateRedux', updateRedux);
+          
+          setTimeout(() => {
+            dispatch({ type: 'isAdd', isAdd: false })
+
+
+          }, 1000)
 
 
         }
@@ -223,8 +229,9 @@ export default function ShowUserData() {
 
       }).catch(err => {
 
-        if (typeof err.response.data == 'string') {
-          SetPhotoError('Only png,jpeg and jpg file allowed')
+        if (err.response.data.Message) {
+
+          SetPhotoError(err.response.data.Message)
         }
 
         let errors = err.response.data.message.details
@@ -247,7 +254,6 @@ export default function ShowUserData() {
           }
 
         })
-
 
         console.log('add user err', err.response.data.message.details)
 
@@ -561,6 +567,15 @@ export default function ShowUserData() {
     });
   };
   function onEditUser(record) {
+
+    SetErr('')
+    SetSuccess('')
+    SetNameError('')
+    SetAgeError('')
+    SetMobileNoError('')
+    SetEmailError('')
+    SetPhotoError('')
+    
     console.log('clicked record', record);
     SetNumber(record.mobileNo)
     dispatch({ type: 'isEditing', isEditing: true })
@@ -627,8 +642,7 @@ export default function ShowUserData() {
 
             }
 
-            SetFileName('')
-            SetUserPic('')
+         
           }}
         >
           <Input
@@ -676,7 +690,7 @@ export default function ShowUserData() {
 
           {success ? <p className='success'>{success} </p> : <p className='err'>{err}</p>}
 
-          {userPic? <img  id="userImg"src={userPic} height={100} width={120} ></img>: ''}
+          {userPic ? <img id="userImg" src={userPic} height={100} width={120} ></img> : ''}
         </Modal>
       </header>
     </div>

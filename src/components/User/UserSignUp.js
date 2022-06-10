@@ -48,13 +48,13 @@ export default function UserSignUp() {
 
         if (userName === '' || userAge === '' || userMobileNo === '' || userEmail === '' || userPhoto === '') {
 
-            SetError('Fill all the fields')
+            SetError('all the fields required')
         }
 
         else {
 
             SetSignUpBtnStatus(true)
-            console.log('img obj',userPhoto);
+            console.log('img obj', userPhoto);
             formData.append("image", userPhoto);
             formData.append("name", userName);
             formData.append("age", userAge);
@@ -100,13 +100,14 @@ export default function UserSignUp() {
 
                     }
 
+                })
+                .catch((err) => {
 
-
-                }).catch(err => {
-
-                   if( typeof err.response.data == 'string') {
-                        SetPhotoError('Only png,jpeg and jpg file allowed')
+                    if (err.response.data.Message) {
+                        
+                        SetPhotoError(err.response.data.Message)
                     }
+
 
                     let errors = err.response.data.message.details
                     errors.map((errMsg) => {
@@ -183,7 +184,7 @@ export default function UserSignUp() {
                 {spinner == 'none' ? <button className='userSignUpInBtn' onClick={() => SubmitData()} disabled={signUpBtnStatus} >Sign Up</button> : <div className='loader' style={{ display: { spinner } }}></div>}
 
 
-                {err ? <p className='err'>{err} </p> : <p className='note'>blankNote</p>}
+                {err ? <p className='Error'>{err} </p> : <p className='note'>blankNote</p>}
                 {success ? <p className='success'>{success} </p> : <p className='note'>blankNote</p>}
 
 

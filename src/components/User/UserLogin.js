@@ -80,7 +80,7 @@ export default function UserLogin() {
 
                                     return response.data[0].isAdmin == 'true' ? navigate('/showdb') : navigate('/loginSuccess')
 
-                                }, 1500)
+                                }, 2000)
                             }
 
                             else {
@@ -92,7 +92,7 @@ export default function UserLogin() {
                         }
                         else {
 
-                            SetError('Email Id or mobile number invalid. Try again')
+                            SetError('Wrong email Id or mobile number. Try again')
                         }
 
                         setLogInBtnStatus(false)
@@ -108,6 +108,7 @@ export default function UserLogin() {
                             if ((errMsg.message).includes('mobileNo')) {
                                 SetMobileNoError(errMsg.message)
                             }
+                            
                             if ((errMsg.message).includes('email')) {
                                 SetEmailError('email must be valid')
                             }
@@ -138,17 +139,17 @@ export default function UserLogin() {
                         <input type='text' className='userip' placeholder='email id' onChange={(e) => dispatch({ type: 'getUserId', payload: e.target.value })} onKeyDown={e => handleKeyPress(e)}></input>
                     </div>
 
-                    {emailErr? <p className='err'>{emailErr} </p> : <p className='success'>{success}</p>}
+                    {emailErr? <p className='err'>{emailErr} </p> : <p className='note'>blankNote</p>}
 
                     <div>
                         <label className='lbl'> Mobile No.</label>
                         <input type='number' className='userip' placeholder='mobile number' onChange={(e) => dispatch({ type: 'getPassword', payload: e.target.value }) }   onKeyDown={e => handleKeyPress(e)}></input>
-                        {mobileNoErr ? <p className='err'>{mobileNoErr} </p> : <p className='success'>{success}</p>}
+                        {mobileNoErr ? <p className='err'>{mobileNoErr} </p> : <p className='note'>blankNote</p>}
                     </div>
 
                     {spinner == 'none' ? <button className='userLogInBtn' onClick={() =>logMeIN()} disabled={logInBtnStatus} >Log In</button> : <div className='loader' style={{ display: { spinner } } }></div>}
 
-                    {err ? <p className='err'>{err} </p> : <p className='success'>{success}</p>}
+                    {err ? <p className='error'>{err} </p> : <p className='Success'>{success}</p>}
 
                 </div>
 

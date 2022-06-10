@@ -44,12 +44,12 @@ body {
 .userLoginWrapper h2 {
 
     color: rgb(129, 79, 139);
-    
+
 }
 
 .userLoginWrapper div {
 
-  
+
     display: flex;
     flex-direction: column;
     text-align: center;
@@ -75,8 +75,8 @@ body {
 
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+    -webkit-appearance: none;
+    margin: 0;
 }
 
 .userLogInBtn {
@@ -90,7 +90,7 @@ input::-webkit-inner-spin-button {
 }
 
 
-.userSignUpInBtn{
+.userSignUpInBtn {
 
     margin-top: 1rem;
     padding: 0.3rem 0.5rem 0.3rem 0.5rem;
@@ -105,21 +105,21 @@ input::-webkit-inner-spin-button {
 .userip {
 
     /* margin-top: 0.5rem; */
-   
-  
+
+
 }
 
-.userPhoto{
+.userPhoto {
 
     margin-top: 0.5rem;
     background-color: rgba(110, 130, 238, 0.438);
     width: 100%;
     font-size: 1rem;
     padding: 0.5rem;
-    
+
 }
 
-.loginSuccessContainer h1{
+.loginSuccessContainer h1 {
 
     text-align: center;
     color: rgb(0, 252, 55);
@@ -128,20 +128,20 @@ input::-webkit-inner-spin-button {
 }
 
 .err {
-   
+
     color: red;
-    
+
 
 }
 
-.userLoginWrapper p{
+.userLoginWrapper p {
     font-size: 0.9rem;
     font-style: italic;
 }
 
 .note {
 
-   
+
     color: rgb(255, 255, 255)
 }
 
@@ -151,7 +151,7 @@ input::-webkit-inner-spin-button {
 }
 
 
-.errorBoundary{
+.errorBoundary {
     color: white;
     margin-top: 2rem;
 }
@@ -165,14 +165,35 @@ input::-webkit-inner-spin-button {
     height: 50px;
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
-  }
-  
-  @-webkit-keyframes spin {
-    0% { -webkit-transform: rotate(0deg); }
-    100% { -webkit-transform: rotate(360deg); }
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
+}
+
+@-webkit-keyframes spin {
+    0% {
+        -webkit-transform: rotate(0deg);
+    }
+
+    100% {
+        -webkit-transform: rotate(360deg);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+.error {
+    color: red;
+    margin-top: 1rem;
+}
+
+.Success {
+    color: green;
+    margin-top: 1rem;
+}

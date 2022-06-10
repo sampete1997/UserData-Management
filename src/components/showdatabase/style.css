@@ -77,7 +77,7 @@
 .success{
     
     color: green;
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-style: italic;
 }
 
@@ -85,3 +85,12 @@
     
     
 }
+
+.Error{
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    color:red;
+    font-style: italic;
+}
+
+
