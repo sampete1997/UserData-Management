@@ -9,7 +9,6 @@ export default function LoginSuccess() {
     const [userPic, SetUserPic] = useState('')
     let UserDetails
 
-    const userName = useSelector((state) => state.login.userName)
 
     UserDetails = localStorage.getItem('userDetails')=='' ? {} : JSON.parse(localStorage.getItem('userDetails'))
     

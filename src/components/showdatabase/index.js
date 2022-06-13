@@ -26,8 +26,10 @@ export default function ShowUserData() {
   const userPhoto = useSelector((state) => state.addUser.photo);
   const isEditing = useSelector((state) => state.showData.isEditing);
   const isAdd = useSelector((state) => state.addUser.isAdd);
+  const userId = useSelector((state) => state.addUser.id);
   const updateRedux = useSelector((state) => state.showData.updateRedux);
   const [number, SetNumber] = useState('')
+  const [mail, SetMail] = useState('')
   const [FileName, SetFileName] = useState('')
 
 
@@ -100,9 +102,8 @@ export default function ShowUserData() {
     SetMobileNoError('')
     SetEmailError('')
     SetPhotoError('')
-
+    formData.append('id', userId);
     formData.append("image", userPhoto);
-    formData.append("mobileNum", number);
     formData.append("name", userName);
     formData.append("age", userAge);
     formData.append("mobileNo", userMobileNo);
@@ -114,29 +115,34 @@ export default function ShowUserData() {
     axiosConn.put("/api/edit", formData).then((response) => {
 
 
+      console.log('res as ', response);
+
+      if (typeof response.data[0] == 'object' && (response.data).length > 0) {
+
+        SetErr('Sorry email or mobile no. already exist')
+
+      }
+
+      else {
+        console.log('saved');
+        SetSuccess('Changes has saved')
+        dispatch({ type: 'updateRedux' })
+        setTimeout(() => {
+          dispatch({ type: 'isEditing', isEditing: false });
 
 
-      SetPhotoError('')
-      SetSuccess('Changes has saved')
-      dispatch({ type: 'updateRedux' })
-      setTimeout(() => {
-        dispatch({ type: 'isEditing', isEditing: false });
-
-
-      }, 1000)
-      
-   
-
-
+        }, 1000)
+      }
     }).catch((err) => {
-
-      if (err.response.data.Message) {
+      console.log('formerrfirst', err);
+      if (err.response?.data?.Message) {
 
         SetPhotoError(err.response.data.Message)
       }
 
-      let errors = err.response.data.message.details
-      errors.map((errMsg) => {
+      let errors = err.response.data?.message?.details
+      console.log('formerr', err);
+      errors?.map((errMsg) => {
 
         console.log('errmsg', errMsg);
 
@@ -189,7 +195,11 @@ export default function ShowUserData() {
     }
     else {
 
+      function uid() {
+        return (performance.now().toString(36) + Math.random().toString(36)).replace(/\./g, "");
+      };
 
+      formData.append("id", uid())
       formData.append("image", userPhoto);
       formData.append("name", userName);
       formData.append("age", userAge);
@@ -201,15 +211,6 @@ export default function ShowUserData() {
       console.log('formdata', formData);
 
       axiosConn.post("/api/addUser", formData
-
-
-        // name: userName,
-        // age: userAge,
-        // mobileNo: userMobileNo,
-        // email: userEmail,
-        // photo: userPhoto,
-        // flag: "false",
-        // isAdmin: "false"
 
       ).then((response) => {
 
@@ -586,6 +587,7 @@ export default function ShowUserData() {
 
     console.log('clicked record', record);
     SetNumber(record.mobileNo)
+    SetMail(record.email)
     dispatch({ type: 'isEditing', isEditing: true })
 
     dispatch({ type: 'updateRedux' })
@@ -593,6 +595,7 @@ export default function ShowUserData() {
     dispatch({ type: 'addAge', age: record.age })
     dispatch({ type: 'addMobileNo', mobileNo: record.mobileNo })
     dispatch({ type: 'addEmail', email: record.email })
+    dispatch({ type: 'id', id: record.id })
 
     SetFileName(record.photo)
 

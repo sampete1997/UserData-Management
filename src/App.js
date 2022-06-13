@@ -21,25 +21,11 @@ import AdminNavBar2 from './components/navBar/adminNavbar';
 
 function App() {
 
-  const userName = useSelector((state) => state.login.userName);
   const location = useLocation();
   const dispatch = useDispatch()
   let userDetails
 
-  userDetails = localStorage.getItem('userDetails') != '' ? JSON.parse(localStorage.getItem('userDetails')) : { isAdmin: 'false' }
-
-  console.log('lcstrg', localStorage.getItem('username'));
-
-  useEffect(() => {
-
-    if (localStorage['username']) {
-
-      dispatch({ type: 'getUserName', payload: localStorage.getItem('username') })
-    }
-
-  }
-
-    , [])
+  userDetails = localStorage.getItem('userDetails') != '' ? JSON.parse(localStorage.getItem('userDetails')) : ''
 
   function HeaderView() {
 
@@ -47,7 +33,7 @@ function App() {
       return <AdminNavBar />
     }
 
-    else if ((location.pathname == '/loginSuccess' || location.pathname == '/' )&& userDetails.isAdmin != 'true') {
+    else if ((location.pathname == '/loginSuccess' || location.pathname == '/') && (userDetails!= '')) {
       return <NavBar2 />
     }
 

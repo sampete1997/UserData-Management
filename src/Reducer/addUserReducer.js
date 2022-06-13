@@ -9,6 +9,7 @@ const initialState = {
     photo: '',
     flag: false,
     isAdd: false,
+    id:''
    
 
 }
@@ -58,6 +59,13 @@ function addUserReducer(state = initialState, action) {
 
                 isAdd: action.isAdd
             }
+            case 'id':
+
+                return {
+                    ...state,
+    
+                    id: action.id
+                }
 
 
         default:

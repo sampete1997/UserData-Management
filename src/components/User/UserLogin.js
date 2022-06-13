@@ -79,8 +79,7 @@ export default function UserLogin() {
                             let UserDetails = JSON.parse(localStorage.getItem('userDetails'))
                             dispatch({ type: 'getUserDetails', payload: UserDetails })
                             console.log('lcl strh details', response.data[0]);
-                            dispatch({ type: 'getUserName', payload: response.data[0].name })
-                            localStorage.setItem('username', response.data[0].name)
+                            
 
                             setTimeout(() => {
 

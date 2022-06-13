@@ -1,5 +1,5 @@
 import './style.css'
-import react, { useState } from 'react';
+import react, { useId, useState } from 'react';
 import axiosConn from '../../webApiConfig';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -53,8 +53,13 @@ export default function UserSignUp() {
 
         else {
 
+            function uid() {
+                return (performance.now().toString(36)+Math.random().toString(36)).replace(/\./g,"");
+              };
+
             SetSignUpBtnStatus(true)
             console.log('img obj', userPhoto);
+            formData.append("id",uid());
             formData.append("image", userPhoto);
             formData.append("name", userName);
             formData.append("age", userAge);

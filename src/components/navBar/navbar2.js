@@ -17,9 +17,9 @@ export default function NavBar2() {
 
             <Link to='/userLogin' className='links' onClick={() => {
 
-                localStorage.setItem('username', '')
+               
                 localStorage.setItem('userDetails', '' )
-                return dispatch({ type: 'getUserName', payload: localStorage['username'] || '' })
+                return dispatch({ type: 'getUserDetails', payload: '' })
             }
 
             }><p >Log Out</p></Link>
